@@ -20,16 +20,16 @@
             padding-left: 0;
         }
         li {
-        list-style: none;
-        margin-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+            list-style: none;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .actions {
-        display: inline-flex;
-        gap: 8px;
-        align-items: center;
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
         }
         button {
             background-color: red;
@@ -42,45 +42,63 @@
 <body>
     <h1>Todoアプリ</h1>
 
-    <!-- エラーメッセージ表示-->
+    <!-- エラーメッセージ表示 -->
     @if ($errors->any())
-    <div style="color:red;">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+        <div style="color:red;">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
 
-    <!-- 新規タスク追加フォーム-->
-     <form action="{{ route('todos.store') }}" method="POST">
+    <!-- 新規タスク追加フォーム -->
+    <form action="{{ route('todos.store') }}" method="POST">
         @csrf
-        <input type="text" name="title" style="padding: 5px 10px;" placeholder="タスクを入力" value="{{ old('title' )}}" required>
+        <input
+            type="text"
+            name="title"
+            style="padding: 5px 10px;"
+            placeholder="タスクを入力"
+            value="{{ old('title') }}"
+            required
+        >
         <button type="submit">追加</button>
-     </form>
+    </form>
 
-     <!-- タスク一覧表示 -->
-     <ul>
+    <!-- タスク一覧表示 -->
+    <ul>
         @forelse ($todos as $todo)
-        <li>
-            <span>{{ $todo->title }}</span>
-            
-            <span class="actions">
-                <!-- 編集ボタン -->
-                <a href="{{ route('todos.edit', $todo->id) }}">編集</a>
+            <li>
+                <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                    <!-- チェックフォーム -->
+                    <form action="{{ route('todos.toggle', $todo->id) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <input type="checkbox" onchange="this.form.submit()" {{ $todo->completed ? 'checked' : '' }}>
+                    </form>
 
-                <!-- 削除フォーム -->
-                <form action="{{ route('todos.destroy', $todo->id) }}" method="POST" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit">削除</button>
-                </form>
-            </span>
-        </li>
+                    <!-- タイトル -->
+                    <span style="{{ $todo->completed ? 'text-decoration: line-through; color: gray;' : '' }}">
+                        {{ $todo->title }}
+                    </span>
+
+                    <!-- 編集・削除 -->
+                    <span class="actions">
+                        <a href="{{ route('todos.edit', $todo->id) }}">編集</a>
+
+                        <form action="{{ route('todos.destroy', $todo->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit">削除</button>
+                        </form>
+                    </span>
+                </div>
+            </li>
         @empty
             <li>タスクはまだありません。</li>
         @endforelse
-     </ul>
+    </ul>
 </body>
 </html>

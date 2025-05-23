@@ -58,4 +58,13 @@ class TodoController extends Controller
 
         return redirect()->route('todos.index');
     }
+
+    //チェックの切り替え
+    public function toggle(Todo $todo)
+    {
+        $todo->completed = !$todo->completed;
+        $todo->save();
+
+        return redirect()->back();
+    }
 }
