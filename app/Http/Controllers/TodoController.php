@@ -38,7 +38,7 @@ class TodoController extends Controller
     //編集内容を更新
     public function update(Request $request, $id)
     {
-        $request->vaildate([
+        $request->validate([
             'title' => 'required|max:255',
         ]);
 
@@ -49,7 +49,7 @@ class TodoController extends Controller
 
         return redirect()->route('todos.index');
     }
-    
+
     //タスクを削除
     public function destroy($id)
     {

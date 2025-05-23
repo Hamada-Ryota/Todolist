@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8>
+    <meta charset="UTF-8">
     <title>タスク編集</title>
 </head>
 <body>
@@ -20,7 +20,7 @@
     <form action="{{ route('todos.update', $todo->id) }}" method="POST">
         @csrf
         @method('PUT')
-        <input type="text" name="title" value="{{ old('title', $todo->title) }}"
+        <input type="text" name="title" value="{{ old('title', $todo->title) }}">
         <button type="submit">更新</button>
     </form>
 
