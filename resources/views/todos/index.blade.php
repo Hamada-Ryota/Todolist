@@ -56,14 +56,8 @@
     <!-- 新規タスク追加フォーム -->
     <form action="{{ route('todos.store') }}" method="POST">
         @csrf
-        <input
-            type="text"
-            name="title"
-            style="padding: 5px 10px;"
-            placeholder="タスクを入力"
-            value="{{ old('title') }}"
-            required
-        >
+        <input type="text" name="title" style="padding: 5px 10px;" placeholder="タスクを入力" value="{{ old('title') }}" required>
+        <input type="date" name="due_date" value="{{ old('due_date') }}">
         <button type="submit">追加</button>
     </form>
 
@@ -82,6 +76,14 @@
                     <!-- タイトル -->
                     <span style="{{ $todo->completed ? 'text-decoration: line-through; color: gray;' : '' }}">
                         {{ $todo->title }}
+                    </span>
+                    <!-- 締切日 -->
+                    <span>
+                        @if ($todo->due_date)
+                        締切： {{ \Carbon\Carbon::parse($todo->due_date)->format('Y年m月d日') }}
+                        @else
+                        締切：未設定
+                        @endif
                     </span>
 
                     <!-- 編集・削除 -->
