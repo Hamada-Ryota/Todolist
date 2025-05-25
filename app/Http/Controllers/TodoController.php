@@ -42,11 +42,13 @@ class TodoController extends Controller
     {
         $request->validate([
             'title' => 'required|max:255',
+            'due_date' => 'nullable|date',
         ]);
 
         $todo = Todo::findOrFail($id);
         $todo->update([
             'title' => $request->title,
+            'due_date' => $request->due_date,
         ]);
 
         return redirect()->route('todos.index');

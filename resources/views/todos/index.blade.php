@@ -78,7 +78,10 @@
                         {{ $todo->title }}
                     </span>
                     <!-- 締切日 -->
-                    <span>
+                    @php
+                        $isOverdue = $todo->due_date && \Carbon\Carbon::parse($todo->due_date)->lt(\Carbon\Carbon::today())
+                    @endphp
+                    <span style="{{ $isOverdue ? 'color: red; font-weight: bold;' : ''}}">
                         @if ($todo->due_date)
                         締切： {{ \Carbon\Carbon::parse($todo->due_date)->format('Y年m月d日') }}
                         @else

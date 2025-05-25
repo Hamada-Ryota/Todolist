@@ -21,6 +21,7 @@
         @csrf
         @method('PUT')
         <input type="text" name="title" value="{{ old('title', $todo->title) }}">
+        <input type="date" name="due_date" value="{{ old('due_date') }}">
         <button type="submit">更新</button>
     </form>
 
