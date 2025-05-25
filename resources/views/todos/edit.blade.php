@@ -10,7 +10,7 @@
     @if ($errors->any())
         <div style="color:red;">
             <ul>
-                @foreach ($errors->all() as $errer)
+                @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
@@ -21,6 +21,7 @@
         @csrf
         @method('PUT')
         <input type="text" name="title" value="{{ old('title', $todo->title) }}">
+        <input type="date" name="due_date" value="{{ old('due_date') }}">
         <button type="submit">更新</button>
     </form>
 

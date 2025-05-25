@@ -10,7 +10,7 @@ class TodoController extends Controller
     //タスクの一覧を表示
     public function index()
     {
-        $todos = Todo::all();
+        $todos = Todo::orderByRaw('due_date IS NULL , due_date ASC')->get();
         return view('todos.index', compact('todos'));
     }
 
@@ -19,10 +19,12 @@ class TodoController extends Controller
     {
         $request->validate([
             'title' => 'required|max:255',
+            'due_date' => 'nullable|date',
         ]);
 
         Todo::create([
             'title' => $request->title,
+            'due_date' => $request->due_date,
         ]);
 
         return redirect()->route('todos.index');
@@ -40,11 +42,13 @@ class TodoController extends Controller
     {
         $request->validate([
             'title' => 'required|max:255',
+            'due_date' => 'nullable|date',
         ]);
 
         $todo = Todo::findOrFail($id);
         $todo->update([
             'title' => $request->title,
+            'due_date' => $request->due_date,
         ]);
 
         return redirect()->route('todos.index');
@@ -57,5 +61,14 @@ class TodoController extends Controller
         $todo->delete();
 
         return redirect()->route('todos.index');
+    }
+
+    //チェックの切り替え
+    public function toggle(Todo $todo)
+    {
+        $todo->completed = !$todo->completed;
+        $todo->save();
+
+        return redirect()->back();
     }
 }
