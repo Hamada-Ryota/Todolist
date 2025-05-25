@@ -10,7 +10,7 @@ class TodoController extends Controller
     //タスクの一覧を表示
     public function index()
     {
-        $todos = Todo::all();
+        $todos = Todo::orderByRaw('due_date IS NULL , due_date ASC')->get();
         return view('todos.index', compact('todos'));
     }
 
