@@ -12,7 +12,10 @@ class TodoController extends Controller
     {
         //並び順：優先度→締切日
         $query = Todo::orderByRaw("priority IS NULL, FIELD(priority, '高', '中', '低')")
-                     ->orderByRaw('due_date IS NULL, due_date ASC');
+            ->orderByRaw('due_date IS NULL, due_date ASC');
+
+        //検索キーワード変数
+        $keyword = $request->search;
 
         //フィルター変数
         $filter = $request->query('filter');
@@ -29,7 +32,13 @@ class TodoController extends Controller
             $query->where('priority', $request->query('priority'));
         }
 
-        $todos = $query->get();
+        //キーワードを含んだタイトルを取得
+        if ($request->filled('search')) {
+            $query->where('title', 'like', "%{$keyword}%");
+        }
+
+        
+        $todos = $query->paginate(10)->withQueryString();
 
         return view('todos.index', compact('todos'));
     }

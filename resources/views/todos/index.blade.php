@@ -49,6 +49,17 @@
 
 <body>
     <h1>Todoアプリ</h1>
+    <!-- タイトル検索機能 -->
+    <form action="{{ route('todos.index') }}" method="GET">
+        <input type="hidden" name="filter" value="{{ request('filter') }}">
+        <input type="hidden" name="priority" value="{{ request('priority') }}">
+        <input type="text" name="search" placeholder="キーワードを入力" value="{{ request('search') }}">
+        <button type="submit">検索</button>
+        <a href="{{ route('todos.index') }}">検索をクリア</a>
+    </form>
+    @if($todos->isEmpty())
+    <p>該当するタスクは見つかりませんでした。</p>
+    @endif
 
     <!-- 未完了フィルター -->
     <div style="margin-bottom: 20px;">
