@@ -10,7 +10,8 @@ class TodoController extends Controller
     //タスクの一覧を表示
     public function index(Request $request)
     {
-        $query = Todo::orderByRaw('due_date IS NULL , due_date ASC');
+        $query = Todo::orderByRaw("priority IS NULL, FIELD(priority, '高', '中', '低')")
+                     ->orderByRaw('due_date IS NULL, due_date ASC');
 
         $filter = $request->query('filter');
 
