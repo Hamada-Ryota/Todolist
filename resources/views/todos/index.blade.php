@@ -65,6 +65,12 @@
         @csrf
         <input type="text" name="title" style="padding: 5px 10px;" placeholder="タスクを入力" value="{{ old('title') }}" required>
         <input type="date" name="due_date" value="{{ old('due_date') }}">
+        <label for="priority">優先度</label>
+        <select name="priority" id="priority" required>
+            <option value="高" {{ old('priority') == '高' ? 'selected' : '' }}>高</option>
+            <option value="中" {{ old('priority', '中') == '中' ? 'selected' : '' }}>中</option>
+            <option value="低" {{ old('priority') == '低' ? 'selected' : '' }}>低</option>
+        </select>
         <button type="submit">追加</button>
     </form>
 
@@ -89,12 +95,27 @@
                     @php
                         $isOverdue = $todo->due_date && \Carbon\Carbon::parse($todo->due_date)->lt(\Carbon\Carbon::today())
                     @endphp
+                    
                     <span style="{{ $isOverdue ? 'color: red; font-weight: bold;' : ''}}">
                         @if ($todo->due_date)
                         締切： {{ \Carbon\Carbon::parse($todo->due_date)->format('Y年m月d日') }}
                         @else
                         締切：未設定
                         @endif
+                    </span>
+
+                    <!-- 優先度色分け -->
+                    @php
+                        $priorityColor = match($todo->priority) {
+                            '高' => 'red',
+                            '中' => 'orange',
+                            '低' => 'gray',
+                            default => 'black',
+                        };
+                    @endphp
+
+                    <span style="color: {{ $priorityColor }};">
+                        優先度：{{ $todo->priority }}
                     </span>
 
                     <!-- 編集・削除 -->
