@@ -56,12 +56,14 @@ class TodoController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'due_date' => 'nullable|date',
+            'priority' => 'nullable|in:高,中,低',
         ]);
 
         $todo = Todo::findOrFail($id);
         $todo->update([
             'title' => $request->title,
             'due_date' => $request->due_date,
+            'priority' => $request->priority,
         ]);
 
         return redirect()->route('todos.index');
