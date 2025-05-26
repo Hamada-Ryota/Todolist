@@ -42,6 +42,13 @@
 <body>
     <h1>Todoアプリ</h1>
 
+    <!-- 未完了フィルター -->
+    <div style="margin-bottom: 20px;">
+        <a href="{{ route('todos.index')}}">すべて表示</a> |
+        <a href="{{ route('todos.index', ['filter' => 'incomplete'])}}">未完了のみ</a> |
+        <a href="{{ route('todos.index', ['filter' => 'complete'])}}">完了済み</a>
+    </div>
+
     <!-- エラーメッセージ表示 -->
     @if ($errors->any())
         <div style="color:red;">
@@ -77,6 +84,7 @@
                     <span style="{{ $todo->completed ? 'text-decoration: line-through; color: gray;' : '' }}">
                         {{ $todo->title }}
                     </span>
+
                     <!-- 締切日 -->
                     @php
                         $isOverdue = $todo->due_date && \Carbon\Carbon::parse($todo->due_date)->lt(\Carbon\Carbon::today())

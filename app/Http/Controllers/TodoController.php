@@ -8,9 +8,20 @@ use App\Models\Todo;
 class TodoController extends Controller
 {
     //タスクの一覧を表示
-    public function index()
+    public function index(Request $request)
     {
-        $todos = Todo::orderByRaw('due_date IS NULL , due_date ASC')->get();
+        $query = Todo::orderByRaw('due_date IS NULL , due_date ASC');
+
+        $filter = $request->query('filter');
+
+        if ($filter === 'incomplete') {
+            $query->where('completed', false);
+        } elseif ($filter === 'complete') {
+            $query->where('completed', true);
+        }
+
+        $todos = $query->get();
+
         return view('todos.index', compact('todos'));
     }
 
