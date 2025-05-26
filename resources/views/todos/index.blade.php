@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <title>Todoアプリ</title>
@@ -10,15 +11,19 @@
             margin: 40px auto;
             padding: 0 20px;
         }
+
         h1 {
             text-align: center;
         }
+
         form {
             margin-bottom: 20px;
         }
+
         ul {
             padding-left: 0;
         }
+
         li {
             list-style: none;
             margin-bottom: 10px;
@@ -26,11 +31,13 @@
             justify-content: space-between;
             align-items: center;
         }
+
         .actions {
             display: inline-flex;
             gap: 8px;
             align-items: center;
         }
+
         button {
             background-color: red;
             color: white;
@@ -39,16 +46,23 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Todoアプリ</h1>
 
     <!-- 未完了フィルター -->
     <div style="margin-bottom: 20px;">
-        <a href="{{ route('todos.index')}}">すべて表示</a> |
-        <a href="{{ route('todos.index', ['filter' => 'incomplete'])}}">未完了のみ</a> |
-        <a href="{{ route('todos.index', ['filter' => 'complete'])}}">完了済み</a>
+        <a style ="{{request()->missing('filter') ? 'color:black; font-weight:bold;' : ''}}" href="{{ route('todos.index') }}">すべて表示</a> |
+        <a style ="{{request('filter') === 'incomplete' ? 'color:blue; font-weight:bold;' : ''}}" href="{{ route('todos.index', ['filter' => 'incomplete']) }}">未完了のみ</a> |
+        <a style ="{{request('filter') === 'complete' ? 'color:green; font-weight:bold;' : ''}}" href="{{ route('todos.index', ['filter' => 'complete']) }}">完了済み</a>
     </div>
-
+    <div style="margin-bottom: 10px;">
+        <strong>優先度：</strong>
+        <a style ="{{request()->missing('filter') ? 'color:black; font-weight:bold;' : ''}}" href="{{ route('todos.index', request()->except('priority')) }}">すべて</a> |
+        <a style ="{{request('priority') === '高' ? 'color:red; font-weight:bold;' : ''}}" href="{{ route('todos.index', array_merge(request()->all(), ['priority' => '高'])) }}">高</a> |
+        <a style ="{{request('priority') === '中' ? 'color:orange; font-weight:bold;' : ''}}" href="{{ route('todos.index', array_merge(request()->all(), ['priority' => '中'])) }}">中</a> |
+        <a style ="{{request('priority') === '低' ? 'color:gray; font-weight:bold;' : ''}}" href="{{ route('todos.index', array_merge(request()->all(), ['priority' => '低'])) }}">低</a>
+    </div>
     <!-- エラーメッセージ表示 -->
     @if ($errors->any())
         <div style="color:red;">
@@ -63,7 +77,8 @@
     <!-- 新規タスク追加フォーム -->
     <form action="{{ route('todos.store') }}" method="POST">
         @csrf
-        <input type="text" name="title" style="padding: 5px 10px;" placeholder="タスクを入力" value="{{ old('title') }}" required>
+        <input type="text" name="title" style="padding: 5px 10px;" placeholder="タスクを入力" value="{{ old('title') }}"
+            required>
         <input type="date" name="due_date" value="{{ old('due_date') }}">
         <label for="priority">優先度</label>
         <select name="priority" id="priority" required>
@@ -93,20 +108,21 @@
 
                     <!-- 締切日 -->
                     @php
-                        $isOverdue = $todo->due_date && \Carbon\Carbon::parse($todo->due_date)->lt(\Carbon\Carbon::today())
+                        $isOverdue =
+                            $todo->due_date && \Carbon\Carbon::parse($todo->due_date)->lt(\Carbon\Carbon::today());
                     @endphp
-                    
-                    <span style="{{ $isOverdue ? 'color: red; font-weight: bold;' : ''}}">
+
+                    <span style="{{ $isOverdue ? 'color: red; font-weight: bold;' : '' }}">
                         @if ($todo->due_date)
-                        締切： {{ \Carbon\Carbon::parse($todo->due_date)->format('Y年m月d日') }}
+                            締切： {{ \Carbon\Carbon::parse($todo->due_date)->format('Y年m月d日') }}
                         @else
-                        締切：未設定
+                            締切：未設定
                         @endif
                     </span>
 
                     <!-- 優先度色分け -->
                     @php
-                        $priorityColor = match($todo->priority) {
+                        $priorityColor = match ($todo->priority) {
                             '高' => 'red',
                             '中' => 'orange',
                             '低' => 'gray',
@@ -135,4 +151,5 @@
         @endforelse
     </ul>
 </body>
+
 </html>

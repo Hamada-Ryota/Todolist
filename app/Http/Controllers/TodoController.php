@@ -10,15 +10,23 @@ class TodoController extends Controller
     //タスクの一覧を表示
     public function index(Request $request)
     {
+        //並び順：優先度→締切日
         $query = Todo::orderByRaw("priority IS NULL, FIELD(priority, '高', '中', '低')")
                      ->orderByRaw('due_date IS NULL, due_date ASC');
 
+        //フィルター変数
         $filter = $request->query('filter');
 
+        //フィルター：未完了or完了
         if ($filter === 'incomplete') {
             $query->where('completed', false);
         } elseif ($filter === 'complete') {
             $query->where('completed', true);
+        }
+
+        //フィルター：優先度（高・中・低）
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->query('priority'));
         }
 
         $todos = $query->get();
