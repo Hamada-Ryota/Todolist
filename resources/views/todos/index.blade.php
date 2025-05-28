@@ -57,22 +57,29 @@
         <button type="submit">検索</button>
         <a href="{{ route('todos.index') }}">検索をクリア</a>
     </form>
-    @if($todos->isEmpty())
-    <p>該当するタスクは見つかりませんでした。</p>
+    @if ($todos->isEmpty())
+        <p>該当するタスクは見つかりませんでした。</p>
     @endif
 
     <!-- 未完了フィルター -->
     <div style="margin-bottom: 20px;">
-        <a style ="{{request()->missing('filter') ? 'color:black; font-weight:bold;' : ''}}" href="{{ route('todos.index') }}">すべて表示</a> |
-        <a style ="{{request('filter') === 'incomplete' ? 'color:blue; font-weight:bold;' : ''}}" href="{{ route('todos.index', ['filter' => 'incomplete']) }}">未完了のみ</a> |
-        <a style ="{{request('filter') === 'complete' ? 'color:green; font-weight:bold;' : ''}}" href="{{ route('todos.index', ['filter' => 'complete']) }}">完了済み</a>
+        <a style ="{{ request()->missing('filter') ? 'color:black; font-weight:bold;' : '' }}"
+            href="{{ route('todos.index') }}">すべて表示</a> |
+        <a style ="{{ request('filter') === 'incomplete' ? 'color:blue; font-weight:bold;' : '' }}"
+            href="{{ route('todos.index', ['filter' => 'incomplete']) }}">未完了のみ</a> |
+        <a style ="{{ request('filter') === 'complete' ? 'color:green; font-weight:bold;' : '' }}"
+            href="{{ route('todos.index', ['filter' => 'complete']) }}">完了済み</a>
     </div>
     <div style="margin-bottom: 10px;">
         <strong>優先度：</strong>
-        <a style ="{{request()->missing('filter') ? 'color:black; font-weight:bold;' : ''}}" href="{{ route('todos.index', request()->except('priority')) }}">すべて</a> |
-        <a style ="{{request('priority') === '高' ? 'color:red; font-weight:bold;' : ''}}" href="{{ route('todos.index', array_merge(request()->all(), ['priority' => '高'])) }}">高</a> |
-        <a style ="{{request('priority') === '中' ? 'color:orange; font-weight:bold;' : ''}}" href="{{ route('todos.index', array_merge(request()->all(), ['priority' => '中'])) }}">中</a> |
-        <a style ="{{request('priority') === '低' ? 'color:gray; font-weight:bold;' : ''}}" href="{{ route('todos.index', array_merge(request()->all(), ['priority' => '低'])) }}">低</a>
+        <a style ="{{ request()->missing('filter') ? 'color:black; font-weight:bold;' : '' }}"
+            href="{{ route('todos.index', request()->except('priority')) }}">すべて</a> |
+        <a style ="{{ request('priority') === '高' ? 'color:red; font-weight:bold;' : '' }}"
+            href="{{ route('todos.index', array_merge(request()->all(), ['priority' => '高'])) }}">高</a> |
+        <a style ="{{ request('priority') === '中' ? 'color:orange; font-weight:bold;' : '' }}"
+            href="{{ route('todos.index', array_merge(request()->all(), ['priority' => '中'])) }}">中</a> |
+        <a style ="{{ request('priority') === '低' ? 'color:gray; font-weight:bold;' : '' }}"
+            href="{{ route('todos.index', array_merge(request()->all(), ['priority' => '低'])) }}">低</a>
     </div>
     <!-- エラーメッセージ表示 -->
     @if ($errors->any())
@@ -88,14 +95,20 @@
     <!-- 新規タスク追加フォーム -->
     <form action="{{ route('todos.store') }}" method="POST">
         @csrf
-        <input type="text" name="title" style="padding: 5px 10px;" placeholder="タスクを入力" value="{{ old('title') }}"
-            required>
+        <input type="text" name="title" style="padding: 5px 10px;" placeholder="タスクを入力"
+            value="{{ old('title') }}" required>
         <input type="date" name="due_date" value="{{ old('due_date') }}">
         <label for="priority">優先度</label>
         <select name="priority" id="priority" required>
             <option value="高" {{ old('priority') == '高' ? 'selected' : '' }}>高</option>
             <option value="中" {{ old('priority', '中') == '中' ? 'selected' : '' }}>中</option>
             <option value="低" {{ old('priority') == '低' ? 'selected' : '' }}>低</option>
+        </select>
+        <label for="priority">タグ</label>
+        <select name="priority" id="priority" required>
+            @foreach ($allTags as $tag)
+            <option value="{{ $tag->id }}" {{ in_array($tag->id, old('tags', [])) ? 'selected' : '' }}>{{ $tag->name }}</option>
+            @endforeach
         </select>
         <button type="submit">追加</button>
     </form>

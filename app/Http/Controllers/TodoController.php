@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Todo;
+use App\Models\Tag;
 
 class TodoController extends Controller
 {
@@ -37,26 +38,33 @@ class TodoController extends Controller
             $query->where('title', 'like', "%{$keyword}%");
         }
 
-        
         $todos = $query->paginate(10)->withQueryString();
 
-        return view('todos.index', compact('todos'));
+        $allTags = Tag::all();
+        return view('todos.index', compact('todos', 'allTags'));
     }
 
     //新しいタスクを保存
     public function store(Request $request)
     {
+
         $request->validate([
             'title' => 'required|max:255',
             'due_date' => 'nullable|date',
             'priority' => 'nullable|in:高,中,低',
         ]);
 
-        Todo::create([
+        $todo = Todo::create([
             'title' => $request->title,
             'due_date' => $request->due_date,
             'priority' => $request->priority,
         ]);
+
+        //タグIDを取得（空でもOK）
+        $tagIds = $request->input('tags', []);
+
+        //タグを関連付ける（中間テーブルに保存）
+        $todo->tags()->sync($tagIds);
 
         return redirect()->route('todos.index');
     }
