@@ -49,6 +49,7 @@
 
 <body>
     <h1>Todoアプリ</h1>
+
     <!-- タイトル検索機能 -->
     <form action="{{ route('todos.index') }}" method="GET">
         <input type="hidden" name="filter" value="{{ request('filter') }}">
@@ -104,10 +105,11 @@
             <option value="中" {{ old('priority', '中') == '中' ? 'selected' : '' }}>中</option>
             <option value="低" {{ old('priority') == '低' ? 'selected' : '' }}>低</option>
         </select>
-        <label for="priority">タグ</label>
-        <select name="priority" id="priority" required>
+        <label for="tags">タグ</label>
+        <select name="tags" id="tags" required>
             @foreach ($allTags as $tag)
-            <option value="{{ $tag->id }}" {{ in_array($tag->id, old('tags', [])) ? 'selected' : '' }}>{{ $tag->name }}</option>
+                <option value="{{ $tag->id }}" {{ in_array($tag->id, old('tags', [])) ? 'selected' : '' }}>
+                    {{ $tag->name }}</option>
             @endforeach
         </select>
         <button type="submit">追加</button>
