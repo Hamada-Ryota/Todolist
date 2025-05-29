@@ -3,13 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Todo extends Model
 {
     protected $fillable = ['title', 'completed', 'due_date', 'priority'];
 
-    public function todos()
+    public function user()
     {
-        return $this->belongsToMany(Todo::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
     }
 }

@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Tag extends Model
 {
     protected $fillable = ['name'];
-    
-    public function tags()
+
+    public function todos()
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsToMany(Todo::class);
     }
 }
